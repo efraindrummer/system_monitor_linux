@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Linux System Monitor
+Comment=Monitor elegante del sistema con CPU, RAM, Red, Discos y Temperatura
+Exec=/home/efracode/Documentos/flutter linux/dashboard_linux_cpu/build/linux/x64/release/bundle/dashboard_linux_cpu
+Icon=utilities-system-monitor
+Terminal=false
+Categories=System;Monitor;Utility;
+Keywords=system;monitor;cpu;ram;network;disk;temperature;
+StartupNotify=true
