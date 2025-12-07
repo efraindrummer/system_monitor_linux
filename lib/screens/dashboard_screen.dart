@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:ui';
+import 'dart:io';
 import '../models/system_info.dart';
 import '../services/system_monitor_service.dart';
 import '../widgets/system_widgets.dart';
@@ -109,7 +110,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: const Color(0xFF0A0E27),
+        backgroundColor: const Color(0xFFF5F7FA),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -126,13 +127,13 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                         shape: BoxShape.circle,
                         gradient: LinearGradient(
                           colors: [
-                            const Color(0xFF00D9FF),
+                            const Color(0xFF1976D2),
                             const Color(0xFF667EEA),
                           ],
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF00D9FF).withOpacity(0.5),
+                            color: const Color(0xFF1976D2).withOpacity(0.5),
                             blurRadius: 30,
                             spreadRadius: 10,
                           ),
@@ -140,7 +141,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                       ),
                       child: const Icon(
                         Icons.monitor_heart_outlined,
-                        color: Colors.white,
+                        color: Color(0xFF1976D2),
                         size: 40,
                       ),
                     ),
@@ -148,10 +149,10 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                 },
               ),
               const SizedBox(height: 24),
-              Text(
+              const Text(
                 'Inicializando Sistema...',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Color(0xFF546E7A),
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
                 ),
@@ -163,19 +164,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     }
 
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              const Color(0xFF0A0E27),
-              const Color(0xFF1a1a2e),
-              const Color(0xFF16213e),
-            ],
-          ),
-        ),
-        child: CustomScrollView(
+      backgroundColor: const Color(0xFFF5F7FA),
+      body: CustomScrollView(
           slivers: [
             _buildGlassAppBar(),
           SliverPadding(
@@ -184,10 +174,14 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               delegate: SliverChildListDelegate([
                 // Top Stats Row
                 _buildTopStatsRow(),
+                const SizedBox(height: 16),
+                
+                // Widget Controls
+                _buildWidgetControls(),
                 const SizedBox(height: 24),
 
                 // CPU Section
-                _buildGlassSectionTitle('Procesador', Icons.memory, const Color(0xFF00D9FF)),
+                _buildGlassSectionTitle('Procesador', Icons.memory, const Color(0xFF1976D2)),
                 const SizedBox(height: 16),
                 _buildGlassCard(
                   child: Column(
@@ -228,7 +222,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                     Expanded(
                       child: Column(
                         children: [
-                          _buildGlassSectionTitle('Memoria', Icons.memory_outlined, const Color(0xFFBB86FC)),
+                          _buildGlassSectionTitle('Memoria', Icons.memory_outlined, const Color(0xFF0288D1)),
                           const SizedBox(height: 16),
                           _buildGlassCard(
                             child: Column(
@@ -249,7 +243,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                     Expanded(
                       child: Column(
                         children: [
-                          _buildGlassSectionTitle('Red', Icons.wifi, const Color(0xFF03DAC6)),
+                          _buildGlassSectionTitle('Red', Icons.wifi, const Color(0xFF00ACC1)),
                           const SizedBox(height: 16),
                           _buildGlassCard(
                             child: Column(
@@ -276,7 +270,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                 const SizedBox(height: 24),
 
                 // Disks Section
-                _buildGlassSectionTitle('Almacenamiento', Icons.storage, const Color(0xFFFFB74D)),
+                _buildGlassSectionTitle('Almacenamiento', Icons.storage, const Color(0xFFFB8C00)),
                 const SizedBox(height: 16),
                 ..._diskInfo.map((disk) => Padding(
                       padding: const EdgeInsets.only(bottom: 12),
@@ -342,97 +336,101 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
             ),
           ),
         ],
-        ),
       ),
     );
   }
 
   Widget _buildGlassAppBar() {
     return SliverAppBar(
-      expandedHeight: 140,
+      expandedHeight: 100,
       floating: false,
       pinned: true,
-      backgroundColor: Colors.transparent,
-      flexibleSpace: ClipRRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withOpacity(0.1),
-                  Colors.white.withOpacity(0.05),
-                ],
-              ),
-              border: Border(
-                bottom: BorderSide(
-                  color: Colors.white.withOpacity(0.2),
-                  width: 1,
-                ),
-              ),
-            ),
-            child: FlexibleSpaceBar(
-              title: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF00D9FF), Color(0xFF667EEA)],
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.monitor_heart_outlined,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  const Text(
-                    'System Monitor',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 20,
-                    ),
-                  ),
-                ],
-              ),
-              centerTitle: false,
+      backgroundColor: Colors.white,
+      elevation: 0,
+      flexibleSpace: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            bottom: BorderSide(
+              color: Color(0xFFE0E0E0),
+              width: 1,
             ),
           ),
+        ),
+        child: FlexibleSpaceBar(
+          titlePadding: const EdgeInsets.only(left: 24, bottom: 16),
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1976D2),
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF1976D2).withOpacity(0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.monitor_heart_outlined,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'System Monitor',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF2C3E50),
+                      fontSize: 18,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                  Text(
+                    'Panel Empresarial',
+                    style: TextStyle(
+                      color: Color(0xFF78909C),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          centerTitle: false,
         ),
       ),
       actions: [
         Container(
-          margin: const EdgeInsets.only(right: 16),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          margin: const EdgeInsets.only(right: 16, bottom: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.white.withOpacity(0.1),
-                Colors.white.withOpacity(0.05),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(20),
+            color: const Color(0xFFF5F7FA),
+            borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: Colors.white.withOpacity(0.2),
+              color: const Color(0xFFE0E0E0),
             ),
           ),
           child: Row(
             children: [
-              Icon(Icons.access_time, color: const Color(0xFF00D9FF), size: 18),
+              const Icon(Icons.access_time, color: Color(0xFF1976D2), size: 18),
               const SizedBox(width: 8),
               Text(
                 _uptime,
                 style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF546E7A),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -446,24 +444,17 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withOpacity(0.1),
-            Colors.white.withOpacity(0.05),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
-          width: 1.5,
+          color: const Color(0xFFE0E0E0),
+          width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -477,35 +468,23 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                color.withOpacity(0.3),
-                color.withOpacity(0.1),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(12),
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: color.withOpacity(0.5),
-              width: 1.5,
+              color: color.withOpacity(0.3),
+              width: 1,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: color.withOpacity(0.3),
-                blurRadius: 15,
-                spreadRadius: 2,
-              ),
-            ],
           ),
-          child: Icon(icon, color: color, size: 24),
+          child: Icon(icon, color: color, size: 22),
         ),
-        const SizedBox(width: 16),
+        const SizedBox(width: 12),
         Text(
           title,
           style: const TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
+            color: Color(0xFF2C3E50),
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.3,
           ),
         ),
       ],
@@ -520,7 +499,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
             'CPU',
             '${_cpuInfo.totalUsage.toStringAsFixed(1)}%',
             Icons.memory,
-            const Color(0xFF00D9FF),
+            const Color(0xFF1976D2),
           ),
         ),
         const SizedBox(width: 12),
@@ -529,7 +508,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
             'RAM',
             '${_memoryInfo.usedMemoryGB} GB',
             Icons.dns,
-            const Color(0xFFBB86FC),
+            const Color(0xFF0288D1),
           ),
         ),
         const SizedBox(width: 12),
@@ -538,7 +517,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
             'Red',
             _networkInfo.isNotEmpty ? '${(_networkInfo.first.downloadSpeed / 1024 / 1024).toStringAsFixed(1)} MB/s' : '0 MB/s',
             Icons.wifi,
-            const Color(0xFF03DAC6),
+            const Color(0xFF00ACC1),
           ),
         ),
       ],
@@ -547,26 +526,19 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
   Widget _buildMiniStat(String label, String value, IconData icon, Color color) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            color.withOpacity(0.2),
-            color.withOpacity(0.05),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: color.withOpacity(0.3),
-          width: 1.5,
+          color: const Color(0xFFE0E0E0),
+          width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.2),
-            blurRadius: 15,
-            spreadRadius: 1,
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -575,25 +547,34 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         children: [
           Row(
             children: [
-              Icon(icon, color: color, size: 20),
-              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, color: color, size: 18),
+              ),
+              const SizedBox(width: 10),
               Text(
                 label,
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
+                style: const TextStyle(
+                  color: Color(0xFF78909C),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.3,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           Text(
             value,
             style: TextStyle(
               color: color,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.5,
             ),
           ),
         ],
@@ -611,9 +592,10 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
             children: [
               Text(
                 _cpuInfo.model,
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
+                style: const TextStyle(
+                  color: Color(0xFF546E7A),
                   fontSize: 14,
+                  fontWeight: FontWeight.w500,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -621,9 +603,10 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               const SizedBox(height: 4),
               Text(
                 '${_cpuInfo.coreCount} Núcleos',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.5),
+                style: const TextStyle(
+                  color: Color(0xFF90A4AE),
                   fontSize: 12,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
@@ -632,23 +615,18 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                const Color(0xFF00D9FF).withOpacity(0.3),
-                const Color(0xFF667EEA).withOpacity(0.3),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(20),
+            color: const Color(0xFF1976D2).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: const Color(0xFF00D9FF).withOpacity(0.5),
+              color: const Color(0xFF1976D2).withOpacity(0.3),
             ),
           ),
           child: Text(
             '${_cpuInfo.totalUsage.toStringAsFixed(1)}%',
             style: const TextStyle(
-              color: Color(0xFF00D9FF),
+              color: Color(0xFF1976D2),
               fontSize: 24,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),
@@ -663,7 +641,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
           'RAM',
           _memoryInfo.memoryPercentage,
           '${_memoryInfo.usedMemoryGB} / ${_memoryInfo.totalMemoryGB} GB',
-          const Color(0xFFBB86FC),
+          const Color(0xFF0288D1),
         ),
         const SizedBox(height: 16),
         _buildMemoryBar(
@@ -685,10 +663,10 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
           children: [
             Text(
               label,
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.7),
+              style: const TextStyle(
+                color: Color(0xFF546E7A),
                 fontSize: 14,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
               ),
             ),
             Text(
@@ -696,38 +674,37 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               style: TextStyle(
                 color: color,
                 fontSize: 16,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         ClipRRect(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(6),
           child: Container(
-            height: 8,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+            height: 10,
+            decoration: const BoxDecoration(
+              color: Color(0xFFECEFF1),
             ),
             child: FractionallySizedBox(
               alignment: Alignment.centerLeft,
               widthFactor: percentage / 100,
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [color, color.withOpacity(0.6)],
-                  ),
+                  color: color,
                 ),
               ),
             ),
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 6),
         Text(
           detail,
-          style: TextStyle(
-            color: Colors.white.withOpacity(0.5),
+          style: const TextStyle(
+            color: Color(0xFF90A4AE),
             fontSize: 11,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],
@@ -747,7 +724,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               child: _buildNetworkIndicator(
                 '↓ Download',
                 network.downloadSpeed,
-                const Color(0xFF03DAC6),
+                const Color(0xFF00ACC1),
               ),
             ),
             const SizedBox(width: 12),
@@ -755,7 +732,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               child: _buildNetworkIndicator(
                 '↑ Upload',
                 network.uploadSpeed,
-                const Color(0xFFFFB74D),
+                const Color(0xFFFB8C00),
               ),
             ),
           ],
@@ -803,9 +780,164 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
   }
 
   Color _getColorForTemp(double temp) {
-    if (temp < 50) return const Color(0xFF03DAC6);
+    if (temp < 50) return const Color(0xFF00ACC1);
     if (temp < 70) return const Color(0xFF4CAF50);
-    if (temp < 85) return const Color(0xFFFFB74D);
+    if (temp < 85) return const Color(0xFFFB8C00);
     return const Color(0xFFFF5252);
+  }
+
+  // Widget Controls para crear widgets flotantes
+  Widget _buildWidgetControls() {
+    return _buildGlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1976D2).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.widgets_outlined,
+                  color: Color(0xFF1976D2),
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'Widgets de Escritorio',
+                style: TextStyle(
+                  color: Color(0xFF2C3E50),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: [
+              _buildWidgetButton(
+                'CPU',
+                Icons.memory,
+                const Color(0xFF1976D2),
+                () => _showFloatingWidget('cpu'),
+              ),
+              _buildWidgetButton(
+                'RAM',
+                Icons.dns,
+                const Color(0xFF0288D1),
+                () => _showFloatingWidget('ram'),
+              ),
+              _buildWidgetButton(
+                'Red',
+                Icons.wifi,
+                const Color(0xFF00ACC1),
+                () => _showFloatingWidget('network'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWidgetButton(
+    String label,
+    IconData icon,
+    Color color,
+    VoidCallback onPressed,
+  ) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: color.withOpacity(0.2),
+              width: 1,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: color, size: 18),
+              const SizedBox(width: 10),
+              Text(
+                label,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.2,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Icon(
+                Icons.launch,
+                color: color.withOpacity(0.6),
+                size: 14,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showFloatingWidget(String type) async {
+    // Lanzar una nueva instancia de la aplicación en modo widget
+    // Esto crea una ventana completamente independiente que se puede arrastrar por el escritorio
+    try {
+      final executable = Platform.resolvedExecutable;
+      await Process.start(
+        executable,
+        [type],
+        mode: ProcessStartMode.detached,
+      );
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Widget de ${type.toUpperCase()} lanzado'),
+            duration: const Duration(seconds: 2),
+            backgroundColor: _getColorForWidgetType(type).withOpacity(0.9),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al lanzar widget: $e'),
+            duration: const Duration(seconds: 3),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+  
+  Color _getColorForWidgetType(String type) {
+    switch (type) {
+      case 'cpu':
+        return const Color(0xFF1976D2);
+      case 'ram':
+        return const Color(0xFF0288D1);
+      case 'network':
+        return const Color(0xFF00ACC1);
+      default:
+        return Colors.blue;
+    }
   }
 }

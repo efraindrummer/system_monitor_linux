@@ -3,33 +3,64 @@
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 import 'screens/dashboard_screen.dart';
+import 'widgets/floating_widgets.dart';
+import 'dart:async';
+import 'services/system_monitor_service.dart';
+import 'models/system_info.dart';
 
-void main() async {
+// Argumentos: flutter run -d linux --dart-define=WIDGET_MODE=cpu
+void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   
   // Configure window
   await windowManager.ensureInitialized();
 
-  WindowOptions windowOptions = const WindowOptions(
-    size: Size(1200, 800),
-    minimumSize: Size(800, 600),
-    center: true,
-    backgroundColor: Color(0xFF0A0E27),
-    skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.normal,
-    title: 'Linux System Monitor by @efracode',
-  );
+  // Detectar modo widget desde argumentos
+  String? widgetMode;
+  if (args.isNotEmpty) {
+    widgetMode = args[0]; // cpu, ram, network
+  }
+  
+  // Configuración de ventana según el modo
+  WindowOptions windowOptions;
+  
+  if (widgetMode != null && ['cpu', 'ram', 'network'].contains(widgetMode)) {
+    // Ventana pequeña para widgets flotantes
+    windowOptions = WindowOptions(
+      size: const Size(250, 180),
+      minimumSize: const Size(200, 150),
+      center: false,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.hidden,
+      title: 'Widget - ${widgetMode.toUpperCase()}',
+      alwaysOnTop: true,
+    );
+  } else {
+    // Ventana principal del dashboard
+    windowOptions = const WindowOptions(
+      size: Size(1200, 800),
+      minimumSize: Size(800, 600),
+      center: true,
+      backgroundColor: Color(0xFF0A0E27),
+      skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.normal,
+      title: 'Linux System Monitor by @efracode',
+    );
+  }
 
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
     await windowManager.focus();
   });
 
-  runApp(const MyApp());
+  runApp(MyApp(widgetMode: widgetMode));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final String? widgetMode;
+  
+  const MyApp({super.key, this.widgetMode});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -57,17 +88,54 @@ class _MyAppState extends State<MyApp> with WindowListener {
     await windowManager.setAlwaysOnTop(_isAlwaysOnTop);
   }
 
+  Widget _buildStandaloneWidget(String mode) {
+    return StandaloneWidgetApp(widgetMode: mode);
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Si es modo widget, mostrar widget flotante independiente
+    if (widget.widgetMode != null) {
+      return MaterialApp(
+        title: 'Widget - ${widget.widgetMode}',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData.dark().copyWith(
+          scaffoldBackgroundColor: Colors.transparent,
+        ),
+        home: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: _buildStandaloneWidget(widget.widgetMode!),
+        ),
+      );
+    }
+    
+    // Dashboard principal
     return MaterialApp(
       title: 'Linux System Monitor by @efracode',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF0A0E27),
-        colorScheme: ColorScheme.dark(
-          primary: const Color(0xFF00D9FF),
-          secondary: const Color(0xFFBB86FC),
-          surface: Colors.grey[900]!,
+      theme: ThemeData.light().copyWith(
+        scaffoldBackgroundColor: const Color(0xFFF5F7FA),
+        colorScheme: ColorScheme.light(
+          primary: const Color(0xFF1976D2),
+          secondary: const Color(0xFF0288D1),
+          surface: Colors.white,
+          background: const Color(0xFFF5F7FA),
+          onPrimary: Colors.white,
+          onSecondary: Colors.white,
+          onSurface: const Color(0xFF2C3E50),
+          onBackground: const Color(0xFF2C3E50),
+        ),
+        cardTheme: CardThemeData(
+          elevation: 2,
+          shadowColor: Colors.black.withOpacity(0.1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          backgroundColor: Colors.white,
+          foregroundColor: Color(0xFF2C3E50),
         ),
         useMaterial3: true,
       ),
@@ -101,31 +169,19 @@ class _MyAppState extends State<MyApp> with WindowListener {
   }) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: isActive
-              ? [
-                  const Color(0xFF00D9FF).withOpacity(0.3),
-                  const Color(0xFF667EEA).withOpacity(0.3),
-                ]
-              : [
-                  Colors.white.withOpacity(0.1),
-                  Colors.white.withOpacity(0.05),
-                ],
-        ),
+        borderRadius: BorderRadius.circular(12),
+        color: isActive ? const Color(0xFF1976D2) : Colors.white,
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
-          width: 1.5,
+          color: isActive ? const Color(0xFF1976D2) : const Color(0xFFE0E0E0),
+          width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: isActive
-                ? const Color(0xFF00D9FF).withOpacity(0.3)
-                : Colors.black.withOpacity(0.2),
-            blurRadius: 20,
-            spreadRadius: isActive ? 2 : 0,
+            color: isActive 
+                ? const Color(0xFF1976D2).withOpacity(0.3)
+                : Colors.black.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -133,19 +189,102 @@ class _MyAppState extends State<MyApp> with WindowListener {
         color: Colors.transparent,
         child: InkWell(
           onTap: onPressed,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           child: Container(
             width: 56,
             height: 56,
             alignment: Alignment.center,
             child: Icon(
               icon,
-              color: Colors.white,
+              color: isActive ? Colors.white : const Color(0xFF546E7A),
               size: 24,
             ),
           ),
         ),
       ),
     );
+  }
+}
+
+// Widget independiente que se ejecuta en su propia ventana
+class StandaloneWidgetApp extends StatefulWidget {
+  final String widgetMode;
+
+  const StandaloneWidgetApp({super.key, required this.widgetMode});
+
+  @override
+  State<StandaloneWidgetApp> createState() => _StandaloneWidgetAppState();
+}
+
+class _StandaloneWidgetAppState extends State<StandaloneWidgetApp> {
+  final SystemMonitorService _monitorService = SystemMonitorService();
+  Timer? _updateTimer;
+  
+  CpuInfo _cpuInfo = CpuInfo.empty();
+  MemoryInfo _memoryInfo = MemoryInfo.empty();
+  List<NetworkInfo> _networkInfo = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _startMonitoring();
+  }
+
+  void _startMonitoring() {
+    _updateData();
+    _updateTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _updateData();
+    });
+  }
+
+  Future<void> _updateData() async {
+    switch (widget.widgetMode) {
+      case 'cpu':
+        final cpuInfo = await _monitorService.getCpuInfo();
+        if (mounted) {
+          setState(() {
+            _cpuInfo = cpuInfo;
+          });
+        }
+        break;
+      case 'ram':
+        final memoryInfo = await _monitorService.getMemoryInfo();
+        if (mounted) {
+          setState(() {
+            _memoryInfo = memoryInfo;
+          });
+        }
+        break;
+      case 'network':
+        final networkInfo = await _monitorService.getNetworkInfo();
+        if (mounted) {
+          setState(() {
+            _networkInfo = networkInfo;
+          });
+        }
+        break;
+    }
+  }
+
+  @override
+  void dispose() {
+    _updateTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    switch (widget.widgetMode) {
+      case 'cpu':
+        return FloatingCpuWidget(cpuInfo: _cpuInfo, onUpdate: (CpuInfo p1) {  },);
+      case 'ram':
+        return FloatingRamWidget(memoryInfo: _memoryInfo, onUpdate: (MemoryInfo p1) {  },);
+      case 'network':
+        return FloatingNetworkWidget(networkInfo: _networkInfo, onUpdate: (List<NetworkInfo> p1) {  },);
+      default:
+        return const Center(
+          child: Text('Widget no soportado'),
+        );
+    }
   }
 }
