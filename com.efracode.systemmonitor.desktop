@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=System Monitor
+GenericName=System Monitor
+Comment=Elegant Linux system monitoring dashboard by @efracode
+Exec=system-monitor-efracode
+Icon=com.efracode.systemmonitor
+Terminal=false
+Categories=System;Monitor;Utility;
+Keywords=system;monitor;cpu;ram;memory;network;disk;temperature;performance;
+StartupNotify=true
+StartupWMClass=dashboard_linux_cpu

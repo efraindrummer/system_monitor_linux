@@ -1,0 +1,72 @@
+name: system-monitor-efracode
+base: core22
+version: '1.0.0'
+summary: System Monitor - Elegant Linux system monitoring dashboard
+description: |
+  System Monitor by @efracode es un elegante dashboard de monitoreo del sistema
+  para Linux que muestra en tiempo real:
+  
+  • Uso de CPU por núcleo con gráficos animados
+  • Memoria RAM y Swap con estadísticas detalladas
+  • Velocidad de red (descarga/subida)
+  • Uso de discos y particiones
+  • Temperaturas del sistema
+  • Widgets flotantes independientes
+  
+  Características:
+  - Diseño empresarial moderno y profesional
+  - Interfaz en modo claro optimizada
+  - Gráficos en tiempo real con historial de 60 segundos
+  - Widgets flotantes arrastrables para CPU, RAM y Red
+  - Siempre visible (always-on-top)
+  - Actualización cada segundo
+  
+  Perfecto para usuarios que necesitan monitorear el rendimiento de su sistema
+  con estilo y elegancia.
+
+grade: stable
+confinement: strict
+icon: assets/images/app_icon.png
+
+apps:
+  system-monitor-efracode:
+    command: dashboard_linux_cpu
+    extensions: [gnome]
+    plugs:
+      - network
+      - network-bind
+      - home
+      - desktop
+      - desktop-legacy
+      - wayland
+      - x11
+      - unity7
+      - opengl
+      - hardware-observe
+      - system-observe
+      - mount-observe
+      - network-observe
+      - physical-memory-observe
+    environment:
+      DISABLE_WAYLAND: 1
+
+parts:
+  flutter-app:
+    plugin: flutter
+    source: .
+    flutter-target: lib/main.dart
+    build-packages:
+      - clang
+      - cmake
+      - ninja-build
+      - libgtk-3-dev
+      - liblzma-dev
+      - libstdc++-12-dev
+    stage-packages:
+      - libgtk-3-0
+      - libgdk-pixbuf2.0-0
+      - libglib2.0-0
+      - libcairo2
+      - libpango-1.0-0
+      - libatk1.0-0
+      - lm-sensors

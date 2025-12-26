@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.efracode.systemmonitor</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>System Monitor</name>
+  <summary>Elegant system monitoring dashboard for Linux</summary>
+  
+  <description>
+    <p>
+      System Monitor by @efracode is a beautiful and modern system monitoring dashboard
+      for Linux that displays real-time information about your system performance.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Real-time CPU usage per core with animated charts</li>
+      <li>Memory (RAM and Swap) statistics with detailed breakdown</li>
+      <li>Network speed monitoring (download/upload)</li>
+      <li>Disk usage and partition information</li>
+      <li>System temperature monitoring</li>
+      <li>Floating desktop widgets for CPU, RAM, and Network</li>
+      <li>Professional light mode design</li>
+      <li>Always-on-top mode for continuous monitoring</li>
+      <li>Updates every second for accurate real-time data</li>
+    </ul>
+  </description>
+  
+  <launchable type="desktop-id">com.efracode.systemmonitor.desktop</launchable>
+  
+  <screenshots>
+    <screenshot type="default">
+      <caption>Main dashboard view</caption>
+    </screenshot>
+  </screenshots>
+  
+  <url type="homepage">https://github.com/efraindrummer/system_monitor_linux</url>
+  <url type="bugtracker">https://github.com/efraindrummer/system_monitor_linux/issues</url>
+  
+  <developer_name>@efracode</developer_name>
+  
+  <provides>
+    <binary>dashboard_linux_cpu</binary>
+  </provides>
+  
+  <releases>
+    <release version="1.0.0" date="2025-12-25">
+      <description>
+        <p>Initial release</p>
+        <ul>
+          <li>Real-time system monitoring</li>
+          <li>CPU, RAM, Network, Disk, Temperature tracking</li>
+          <li>Floating desktop widgets</li>
+          <li>Professional light mode design</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+  
+  <content_rating type="oars-1.1" />
+  
+  <categories>
+    <category>System</category>
+    <category>Monitor</category>
+    <category>Utility</category>
+  </categories>
+  
+  <keywords>
+    <keyword>system</keyword>
+    <keyword>monitor</keyword>
+    <keyword>cpu</keyword>
+    <keyword>ram</keyword>
+    <keyword>network</keyword>
+    <keyword>performance</keyword>
+    <keyword>dashboard</keyword>
+  </keywords>
+</component>

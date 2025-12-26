@@ -1,0 +1,155 @@
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║        �� QUICK START - PUBLICAR EN SNAP STORE                ║
+║        System Monitor by @efracode                            ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+🎯 PASOS RÁPIDOS (3 COMANDOS)
+═══════════════════════════════════════════════════════════════
+
+1️⃣  CONFIGURAR ENTORNO (solo una vez)
+
+    ./setup_snapcraft.sh
+
+
+2️⃣  CONSTRUIR EL SNAP
+
+    ./build_snap.sh
+
+
+3️⃣  PUBLICAR EN SNAP STORE
+
+    snapcraft login        # Solo la primera vez
+    ./upload_snap.sh
+
+
+═══════════════════════════════════════════════════════════════
+
+📝 PROCESO COMPLETO PASO A PASO
+═══════════════════════════════════════════════════════════════
+
+Paso 1: Instalar snapcraft (solo una vez)
+─────────────────────────────────────────
+sudo snap install snapcraft --classic
+
+
+Paso 2: Configurar dependencias (solo una vez)
+───────────────────────────────────────────────
+./setup_snapcraft.sh
+
+Este script instala:
+✓ Herramientas de compilación (clang, cmake, ninja)
+✓ Bibliotecas GTK
+✓ lm-sensors para monitoreo
+
+
+Paso 3: Construir el snap
+──────────────────────────
+./build_snap.sh
+
+Construye en modo local (sin LXD/multipass)
+Tiempo estimado: 10-15 minutos
+Resultado: system-monitor-efracode_1.0.0_amd64.snap
+
+
+Paso 4: Probar localmente (opcional pero recomendado)
+──────────────────────────────────────────────────────
+sudo snap install system-monitor-efracode_*.snap --dangerous
+system-monitor-efracode
+
+Para desinstalar después de probar:
+sudo snap remove system-monitor-efracode
+
+
+Paso 5: Crear cuenta en Snapcraft (solo una vez)
+──────────────────────────────────────────────────
+→ Ve a https://snapcraft.io
+→ Crea una cuenta o inicia sesión
+→ Acepta los términos del desarrollador
+
+
+Paso 6: Autenticarse (solo una vez)
+────────────────────────────────────
+snapcraft login
+
+
+Paso 7: Publicar
+─────────────────
+./upload_snap.sh
+
+Este script:
+✓ Verifica autenticación
+✓ Registra el nombre del snap
+✓ Sube a Snap Store
+✓ Publica en canal stable
+
+
+═══════════════════════════════════════════════════════════════
+
+🎨 DESPUÉS DE PUBLICAR
+═══════════════════════════════════════════════════════════════
+
+Tu app estará en:
+🌐 https://snapcraft.io/system-monitor-efracode
+
+Los usuarios instalan con:
+$ sudo snap install system-monitor-efracode
+
+
+Mejora tu listado:
+1. Ve a: https://snapcraft.io/system-monitor-efracode/listing
+2. Sube screenshots (PNG 1920x1080)
+3. Completa la descripción
+4. Agrega categorías
+
+
+═══════════════════════════════════════════════════════════════
+
+🔧 SOLUCIÓN DE PROBLEMAS
+═══════════════════════════════════════════════════════════════
+
+Error: "LXD is required"
+→ Solución: Usamos --destructive-mode (ya configurado)
+
+Error: "No network access"
+→ Solución: Verifica conexión a internet
+→ Verifica: ping snapcraft.io
+
+Error al construir
+→ Ejecuta: ./setup_snapcraft.sh
+→ Verifica: flutter --version
+
+Error "nombre ya en uso"
+→ Cambia el nombre en snap/snapcraft.yaml
+→ Usa: system-monitor-tuusuario
+
+
+═══════════════════════════════════════════════════════════════
+
+📊 INFORMACIÓN DE LA APP
+═══════════════════════════════════════════════════════════════
+
+Nombre visible: System Monitor @efracode
+ID del snap: system-monitor-efracode
+Comando: system-monitor-efracode
+URL: https://snapcraft.io/system-monitor-efracode
+
+
+═══════════════════════════════════════════════════════════════
+
+💡 TIPS
+═══════════════════════════════════════════════════════════════
+
+✓ Primera publicación: 1-3 días para revisión
+✓ Actualizaciones: automáticas para usuarios
+✓ Canales: edge → beta → candidate → stable
+✓ Modo destructivo: construye localmente sin LXD
+✓ Logs: ~/.local/state/snapcraft/log/
+
+
+═══════════════════════════════════════════════════════════════
+
+¡Buena suerte! 🎉
+
+═══════════════════════════════════════════════════════════════

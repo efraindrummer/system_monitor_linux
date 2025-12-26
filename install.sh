@@ -16,6 +16,10 @@ mkdir -p ~/.local/share/applications
 # Obtener la ruta absoluta del proyecto
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
+# Copiar el icono a la ubicación estándar
+mkdir -p ~/.local/share/icons/hicolor/256x256/apps
+cp "${PROJECT_DIR}/assets/images/app_icon.png" ~/.local/share/icons/hicolor/256x256/apps/dashboard-linux-cpu.png
+
 # Crear archivo .desktop con la ruta correcta
 cat > ~/.local/share/applications/linux-system-monitor.desktop << EOF
 [Desktop Entry]
@@ -24,7 +28,7 @@ Type=Application
 Name=Linux System Monitor
 Comment=Monitor elegante del sistema con CPU, RAM, Red, Discos y Temperatura
 Exec=${PROJECT_DIR}/build/linux/x64/release/bundle/dashboard_linux_cpu
-Icon=utilities-system-monitor
+Icon=dashboard-linux-cpu
 Terminal=false
 Categories=System;Monitor;Utility;
 Keywords=system;monitor;cpu;ram;network;disk;temperature;
@@ -37,6 +41,11 @@ chmod +x ~/.local/share/applications/linux-system-monitor.desktop
 # Actualizar base de datos de aplicaciones
 if command -v update-desktop-database &> /dev/null; then
     update-desktop-database ~/.local/share/applications
+fi
+
+# Actualizar caché de iconos
+if command -v gtk-update-icon-cache &> /dev/null; then
+    gtk-update-icon-cache ~/.local/share/icons/hicolor/ -f -t 2>/dev/null
 fi
 
 echo "✅ ¡Instalación completada!"
